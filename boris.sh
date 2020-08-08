@@ -88,6 +88,11 @@ scanlight(){
   echo -e "${GREEN}[ + ] Executando TRACEROUTE >${NC}\n"
   traceroute "$ip" | tee "$dir"/traceroute.txt
   echo "$PL"
+  
+  echo -e "${GREEN}[ + ] Executando WHATWEB >${NC}\n"
+  whatweb -v "$dom" -t 10 | tee "$dir"/whatweb.txt
+  echo "$PL"
+
 
   echo -e "${GREEN}[ + ] Executando PING >${NC}\n"
   ping "$dom" -c 1 -W 3| tee "$dir"/ping.txt
