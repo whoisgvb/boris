@@ -15,7 +15,7 @@
 'Bot' pra automatizar as partes chatas # Em construção ZzZ
 
 + Reconhecimento de TTL no ping.txt
-+ Scan full com reconhecimento de wordpress
++ Scan full com reconhecimento de wordpress, xmlrpc e base de usuários
 + Ao reconhecer o wordpress roda o WpScan 
 + Ao reconhecer o wordpress roda o WFUZZ com wordlist personalizada
 
@@ -28,7 +28,7 @@
 chmod +x boris.sh
 sudo ./boris <dominio> <diretorio_inicial>
 
-$ sudo ./boris meusite.com /home/kali/Documents/
+$ sudo ./boris meusite.com/ /home/kali/Documents/
 ```
 
 ### Contato
