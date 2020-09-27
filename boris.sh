@@ -23,7 +23,7 @@
 [ ! -x $(which wpscan) ]            && git clone https://github.com/wpscanteam/wpscan.git
 [ ! -x $(which theharvester) ]      && sudo apt-get install theharvester
 
-VERSAO="v.1"
+VERSAO="v.1.2"
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
@@ -148,17 +148,27 @@ scanfat(){
 scanwordpress(){
   # Execução das ferramentas para Wordpress
   req="$(curl -s https://'$dom' | egrep -i '(wp-content|wordpress)')"
+  xmlrpc="$(curl -s https://'$dom'/xmlrpc.php | egrep -i 'XML-RPC server accepts POST requests only.')" 
+  users="$(curl -s https://'$dom'/wp-json/wp/v2/users | egrep -i '(id|slug)')"
+  if [ "$users" ]; then
+    echo -e "${GREEN}[ + ]  Base de usuários exposta!${NC}\n"
+    wget https://'$dom'/wp-json/wp/v2/users -O "$dir"/usersrecon.txt
+  fi
+  if [ "$xmlrpc" ]; then
+    echo -e "${GREEN}[ + ]  XML-RPC Encontrado!${NC}\n"
+  fi
   if [ "$req" ]; then
     echo -e "${GREEN}[ + ]  Wordpress foi encontrado!${NC}\n"
     sleep 0.3
     echo -e "${GREEN}[ + ] Executando WPSCAN >${NC}\n"
     wpscan  --url "$dom" | tee "$dir"/wpscan.txt
-     echo "$PL"
-    
+    echo "$PL"
     echo -e "${GREEN}[ + ] Executando WFUZZ para diretórios do Wordpress >${NC}\n"
     wfuzz -w /usr/share/seclists/Discovery/Web-Content/CMS/wordpress.fuzz.txt -u https://"$dom"/FUZZ --hc 404,301 | tee "$dir"/wfuzz_wordpress.txt
     echo "$PL"
-
+  fi
+  if [ "$xmlrpc" ]; then
+    echo -e "${GREEN}[ + ]  XML-RPC Encontrado!${NC}\n"
   fi
 }
 
